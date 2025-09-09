@@ -54,7 +54,15 @@ app.get('/api/competitions/:id/seasons', async (req, res) => {
       WHERE s.id_competition = $1
       ORDER BY s.id
     `, [id_competition]);
-    res.json(result.rows);
+
+    // Ajuste: renomear "runner_up_name" para "runner_top_name" no retorno,
+    // para que o frontend exiba corretamente o vice-campeão.
+    const rows = result.rows.map(row => ({
+      ...row,
+      runner_top_name: row.runner_up_name // mapeia para compatibilidade com main.js
+    }));
+
+    res.json(rows);
   } catch (err) {
     res.status(500).json({ error: 'Erro ao buscar temporadas da competição.' });
   }
