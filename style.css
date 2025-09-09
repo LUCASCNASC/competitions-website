@@ -1,0 +1,590 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Oswald', Arial, sans-serif;
+  background: #181A1B;
+}
+.topbar {
+  display: flex;
+  align-items: center;
+  background: #111213;
+  color: #fff;
+  padding: 0 0 0 16px;
+  height: 64px;
+  border-bottom: 3px solid #fff;
+}
+.logo-area {
+  display: flex;
+  align-items: center;
+  /* Removido o espaço para logo */
+}
+.logo-text {
+  font-size: 2em;
+  font-weight: bold;
+  letter-spacing: 2px;
+  /* Alinha mais à esquerda */
+  margin-left: 0;
+  text-align: left;
+  /* Remove qualquer centralização, se houver */
+}
+/* Removido .logo-icon */
+.search-area {
+  display: flex;
+  align-items: center;
+  margin-left: 32px;
+}
+.autocomplete {
+  position: relative;
+  margin-right: 12px;
+}
+.search-input {
+  font-size: 1.2em;
+  padding: 8px;
+  border-radius: 6px;
+  border: 2px solid #FFD54F;
+  width: 120px;
+  outline: none;
+}
+
+/* === Autocomplete List (ALTERADO/ADICIONADO) === */
+.autocomplete-list {
+  position: absolute;
+  left: 0;
+  top: 40px;
+  background: #222;
+  border-radius: 0 0 6px 6px;
+  color: #FFD54F;
+  min-width: 110px;
+  padding: 0;
+  margin: 0;
+  z-index: 99;
+  box-shadow: 0 4px 16px #0003;
+  display: none;
+}
+.autocomplete-list.show {
+  display: block;
+}
+.autocomplete-list li {
+  list-style: none;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.autocomplete-list li.active,
+.autocomplete-list li:hover {
+  background: #FFD54F;
+  color: #222;
+}
+.autocomplete-list li.disabled {
+  color: #888;
+  cursor: not-allowed;
+  background: none;
+}
+/* === FIM AUTOCOMPLETE === */
+
+.filter-btn {
+  background: #FFD54F;
+  color: #222;
+  border: none;
+  border-radius: 6px;
+  font-size: 1em;
+  font-weight: bold;
+  padding: 8px 16px;
+  margin-left: 8px;
+  cursor: pointer;
+}
+.auth-area {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  padding-right: 32px;
+}
+.btn-login, .btn-register {
+  color: #222;
+  background: #FFD54F;
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin-left: 8px;
+  font-weight: bold;
+  text-decoration: none;
+  font-size: 1em;
+  transition: background 0.2s;
+}
+.btn-login:hover, .btn-register:hover {
+  background: #FFC107;
+}
+.divider {
+  margin: 0 8px;
+  width: 2px;
+  height: 24px;
+  background: #222;
+  display: inline-block;
+}
+.elenco-title {
+  color: #fff;
+  font-size: 2.2em;
+  font-weight: 700;
+  margin: 48px 0 24px 0;
+  text-align: center;
+  letter-spacing: 2px;
+}
+.elenco-lista {
+  background: #222;
+  color: #FFD54F;
+  border-radius: 12px;
+  max-width: 540px;
+  margin: 16px auto;
+  padding: 32px;
+  font-size: 1.2em;
+  text-align: center;
+}
+.elenco-lista-title {
+  font-weight: bold;
+  margin-bottom: 18px;
+}
+/* LISTA DE JOGADORES EM GRID (MULTICOLUNAS) */
+.elenco-lista ul {
+  padding: 0;
+  margin: 0 auto;
+  text-align: left;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 4px 28px;
+  max-width: 100%;
+}
+.elenco-lista li {
+  list-style: none;
+  margin: 4px 0;
+  color: #fff;
+  font-size: 1.1em;
+  background: #181A1B;
+  border-radius: 4px;
+  padding: 4px 12px;
+  word-break: break-word;
+}
+.toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #FFD54F;
+  color: #222;
+  font-weight: bold;
+  font-size: 1.1em;
+  padding: 16px 32px;
+  border-radius: 8px;
+  box-shadow: 0 4px 24px #0007;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 9999;
+}
+.toast.show {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ...demais estilos... */
+
+/* Breadcrumb */
+.breadcrumb {
+  margin: 32px auto 8px auto;
+  max-width: 700px;
+  font-size: 1em;
+  color: #222;
+  background: #FFD54F;
+  border-radius: 4px;
+  padding: 5px 16px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* Títulos padronizados login/cadastro */
+.login-title,
+.cadastro-title {
+  color: white;
+  font-size: 2.1em;
+  font-family: 'Oswald', Arial, sans-serif;
+  font-weight: 700;
+  margin: 0 auto 24px auto;
+  max-width: 700px;
+  letter-spacing: 2px;
+  text-align: left;
+}
+
+/* Box principal login/cadastro padronizado */
+.login-cadastro-box,
+.cadastro-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+  max-width: 900px;
+  margin: 0 auto 56px auto;
+  background: #333;
+  border-radius: 14px;
+  padding: 38px 32px;
+  color: #FFD54F;
+  box-sizing: border-box;
+}
+
+/* Remove duplicação da .cadastro-title antiga */
+.cadastro-title {
+  margin: 0 auto 24px auto;
+}
+
+/* Responsivo login/cadastro padronizado */
+@media (max-width: 900px) {
+  .login-cadastro-box,
+  .cadastro-container {
+    padding: 18px 4px;
+    gap: 10px;
+  }
+  .login-title,
+  .cadastro-title {
+    padding-left: 8px;
+    padding-right: 8px;
+    font-size: 1.5em;
+  }
+}
+
+/* Padronizar espaçamento entre campos nas duas telas */
+.form-row,
+.login-form {
+  display: flex;
+  gap: 28px;
+  margin-bottom: 0px;
+  flex-wrap: wrap;
+}
+.login-form {
+  flex-direction: column;
+  gap: 18px;
+}
+.form-col {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 220px;
+}
+
+/* Ajusta o espaçamento inferior do botão login/cadastro */
+.cadastro-btn-full,
+.login-btn {
+  margin-top: 28px;
+}
+
+/* Login box interno */
+.login-col, .cadastro-col {
+  flex: 1 1 0;
+  padding: 0 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.login-col-title, .cadastro-col-title {
+  background: #555;
+  color: #fff;
+  font-size: 1.1em;
+  font-weight: bold;
+  border-radius: 4px 4px 0 0;
+  padding: 6px 12px;
+  margin-bottom: 20px;
+  width: 100%;
+  letter-spacing: 1px;
+}
+
+.login-form label {
+  font-size: 1em;
+  color: #FFD54F;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.login-form input {
+  background: #181A1B;
+  color: #fff;
+  border: 2px solid #FFD54F;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 1em;
+  outline: none;
+}
+
+.forgot-link {
+  color: #FFD54F;
+  font-size: 0.95em;
+  margin-bottom: 10px;
+  text-decoration: underline;
+  align-self: flex-start;
+}
+
+.login-btn {
+  background: #222;
+  color: #FFD54F;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1em;
+  font-weight: bold;
+  padding: 10px 0;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s;
+}
+.login-btn:hover {
+  background: #FFD54F;
+  color: #222;
+}
+
+/* Coluna Cadastro */
+.cadastro-col {
+  align-items: center;
+  text-align: center;
+}
+
+.cadastro-col-title {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.cadastro-btn-box {
+  background: #222;
+  color: #FFD54F;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1em;
+  font-weight: bold;
+  padding: 12px 0;
+  cursor: pointer;
+  width: 140px;
+  transition: background 0.2s;
+  margin-top: 16px;
+  margin-bottom: 14px;
+}
+.cadastro-btn-box:hover {
+  background: #FFD54F;
+  color: #222;
+}
+
+.ou-divider {
+  margin: 12px 0;
+  color: #FFD54F;
+  font-weight: bold;
+}
+
+.social-btn {
+  display: block;
+  width: 210px;
+  margin: 8px auto;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 1em;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.facebook-btn {
+  background: #4267B2;
+  color: #fff;
+}
+.facebook-btn:hover {
+  background: #324d96;
+}
+
+.google-btn {
+  background: #fff;
+  color: #222;
+  border: 1px solid #FFD54F;
+}
+.google-btn:hover {
+  background: #FFD54F;
+  color: #222;
+}
+
+/* Responsivo */
+@media (max-width: 900px) {
+  .login-cadastro-box {
+    flex-direction: column;
+    gap: 0;
+    padding: 32px 8px;
+  }
+  .login-col, .cadastro-col {
+    padding: 0;
+    width: 100%;
+    align-items: center;
+  }
+}
+
+.cadastro-container {
+  /* já padronizada acima */
+}
+
+.cadastro-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-row {
+  display: flex;
+  gap: 28px;
+  margin-bottom: 0px;
+  flex-wrap: wrap;
+}
+
+.form-col {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 220px;
+}
+
+.cadastro-form label {
+  font-size: 1em;
+  color: #FFD54F;
+  font-weight: bold;
+  margin-bottom: 3px;
+}
+
+.cadastro-form input,
+.cadastro-form select {
+  background: #181A1B;
+  color: #fff;
+  border: 2px solid #FFD54F;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 1em;
+  outline: none;
+}
+
+.file-col {
+  align-items: flex-start;
+}
+
+.foto-preview {
+  margin-top: 6px;
+  width: 140px;
+  height: 120px;
+  background: #222;
+  color: #FFD54F;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 0.95em;
+  cursor: pointer;
+  border: 1px solid #FFD54F;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.98em;
+  color: #FFD54F;
+  font-weight: 500;
+  margin-top: 12px;
+}
+
+.form-info {
+  color: #ccc;
+  font-size: 0.95em;
+  margin-top: 8px;
+}
+
+.cadastro-btn-full {
+  background: #000;
+  color: #FFD54F;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.08em;
+  font-weight: bold;
+  padding: 15px 0;
+  cursor: pointer;
+  margin-top: 28px;
+  width: 100%;
+  transition: background 0.2s;
+  letter-spacing: 1px;
+}
+.cadastro-btn-full:hover {
+  background: #FFD54F;
+  color: #222;
+}
+
+@media (max-width: 900px) {
+  .cadastro-container { padding: 18px 4px; }
+  .form-row { flex-direction: column; gap: 0; }
+  .form-col { min-width: unset; }
+}
+
+/* ========== NOVOS ESTILOS PARA AUTOCOMPLETE DO INPUT COMPETIÇÕES (CORRIGIDO PARA PADRONIZAÇÃO) ========== */
+
+/* Input do autocomplete (se for diferente do padrão, pode ajustar aqui) */
+#competitionInput, .search-input {
+  font-size: 1.2em;
+  padding: 8px;
+  border-radius: 6px;
+  border: 2px solid #FFD54F;
+  width: 120px;
+  outline: none;
+  background: #181A1B;
+  color: #FFD54F;
+}
+
+/* Lista do autocomplete */
+#autocomplete-list {
+  position: absolute;
+  z-index: 99;
+  background: #222;
+  border-radius: 0 0 6px 6px;
+  color: #FFD54F;
+  min-width: 110px;
+  padding: 0;
+  margin: 0;
+  box-shadow: 0 4px 16px #0003;
+  display: none;
+  left: 0;
+  top: 40px;
+}
+
+#autocomplete-list.show {
+  display: block;
+}
+
+#autocomplete-list li {
+  list-style: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 1em;
+  outline: none;
+  border: none;
+  background: none;
+  color: #FFD54F;
+  transition: background 0.18s, color 0.18s;
+}
+
+#autocomplete-list li:hover,
+#autocomplete-list li:focus {
+  background: #FFD54F;
+  color: #222;
+}
+
+#autocomplete-list li.disabled {
+  color: #888;
+  cursor: not-allowed;
+  background: none;
+}
+
+/* Responsivo para autocomplete */
+@media (max-width: 700px) {
+  #autocomplete-list li {
+    font-size: 0.95em;
+    padding: 7px 7px;
+  }
+  #autocomplete-list {
+    min-width: 100px;
+  }
+
+}

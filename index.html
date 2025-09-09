@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Campeões</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo-area">
+      <span class="logo-text" id="reload-home" style="cursor:pointer;">Campeões</span>
+    </div>
+    <div class="search-area" id="search-area">
+      <div class="autocomplete">
+        <input type="text" id="competition-input" class="search-input" placeholder="Pesquisar competições..." autocomplete="off" aria-label="Pesquisar competição">
+        <ul id="autocomplete-list" class="autocomplete-list"></ul>
+      </div>
+      <button id="filter-btn" class="filter-btn">FILTRAR</button>
+    </div>
+    <div class="auth-area">
+      <a href="#" class="btn-login" tabindex="0">ENTRAR</a>
+      <span class="divider"></span>
+      <a href="#" class="btn-register" id="register-link" tabindex="0">CADASTRAR</a>
+    </div>
+  </header>
+  <main id="main-content"></main>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="main.js"></script>
+</body>
+</html>
