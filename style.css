@@ -37,13 +37,40 @@ body {
   position: relative;
   margin-right: 12px;
 }
-.search-input {
+/* Aumenta a largura do campo de pesquisa */
+.search-input,
+#competitionInput {
   font-size: 1.2em;
-  padding: 8px;
+  padding: 8px 36px 8px 12px; /* espaço à direita para o botão clear */
   border-radius: 6px;
   border: 2px solid #FFD54F;
-  width: 120px;
+  width: 320px; /* AUMENTADO */
   outline: none;
+  background: #181A1B;
+  color: #FFD54F;
+  box-sizing: border-box;
+  position: relative;
+  transition: width 0.2s;
+}
+
+/* Botão clear (X) dentro do input */
+.input-clear-btn {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #FFD54F;
+  font-size: 1.3em;
+  cursor: pointer;
+  display: none;
+  z-index: 10;
+  padding: 0;
+  line-height: 1;
+}
+.input-clear-btn.show {
+  display: block;
 }
 
 /* === Autocomplete List (ALTERADO/ADICIONADO) === */
@@ -524,13 +551,15 @@ body {
 /* Input do autocomplete (se for diferente do padrão, pode ajustar aqui) */
 #competitionInput, .search-input {
   font-size: 1.2em;
-  padding: 8px;
+  padding: 8px 36px 8px 12px;
   border-radius: 6px;
   border: 2px solid #FFD54F;
-  width: 120px;
+  width: 320px;
   outline: none;
   background: #181A1B;
   color: #FFD54F;
+  box-sizing: border-box;
+  position: relative;
 }
 
 /* Lista do autocomplete */
