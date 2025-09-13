@@ -40,6 +40,11 @@ app.get('/api/competitions', async (req, res) => {
 // Rota para buscar temporadas de uma competição, trazendo nomes dos campeões e vices
 app.get('/api/competitions/:id/seasons', async (req, res) => {
   const id_competition = req.params.id;
+
+  // Ordena por ano da temporada (mais recente primeiro)
+  // Usa o campo name_season_american assumindo que ele representa o ano, ajuste se o campo correto for outro!
+  const order = 'DESC';
+
   try {
     const result = await pool.query(`
       SELECT
@@ -52,7 +57,7 @@ app.get('/api/competitions/:id/seasons', async (req, res) => {
       LEFT JOIN teams t1 ON s.id_champion = t1.id
       LEFT JOIN teams t2 ON s.id_runner_up = t2.id
       WHERE s.id_competition = $1
-      ORDER BY s.id
+      ORDER BY CAST(s.name_season_american AS INTEGER) ${order}
     `, [id_competition]);
 
     // Ajuste: renomear "runner_up_name" para "runner_top_name" no retorno,
