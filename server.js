@@ -2,11 +2,28 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
-const bcrypt = require('bcrypt'); // Certifique-se de instalar: yarn add bcrypt
+const bcrypt = require('bcrypt');
+const multer = require('multer');
+const path = require('path');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Configuração do multer para upload de fotos
+const upload = multer({
+  dest: 'uploads/',
+  limits: { fileSize: 5 * 1024 * 1024 }, // Limite de 5MB por foto
+  fileFilter: (req, file, cb) => {
+    // Aceita apenas imagens
+    const allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (allowed.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Tipo de arquivo não suportado.'));
+    }
+  }
+});
 
 // Configuração do banco de dados usando variáveis do .env
 const pool = new Pool({
@@ -42,7 +59,6 @@ app.get('/api/competitions/:id/seasons', async (req, res) => {
   const id_competition = req.params.id;
 
   // Ordena por ano da temporada (mais recente primeiro)
-  // Usa o campo name_season_american assumindo que ele representa o ano, ajuste se o campo correto for outro!
   const order = 'DESC';
 
   try {
@@ -60,11 +76,10 @@ app.get('/api/competitions/:id/seasons', async (req, res) => {
       ORDER BY CAST(s.name_season_american AS INTEGER) ${order}
     `, [id_competition]);
 
-    // Ajuste: renomear "runner_up_name" para "runner_top_name" no retorno,
-    // para que o frontend exiba corretamente o vice-campeão.
+    // Renomeia "runner_up_name" para "runner_top_name" para compatibilidade com main.js
     const rows = result.rows.map(row => ({
       ...row,
-      runner_top_name: row.runner_up_name // mapeia para compatibilidade com main.js
+      runner_top_name: row.runner_up_name
     }));
 
     res.json(rows);
@@ -73,15 +88,16 @@ app.get('/api/competitions/:id/seasons', async (req, res) => {
   }
 });
 
-// Cadastro de usuário
-app.post('/api/usuarios', async (req, res) => {
+// Cadastro de usuário com suporte a foto (multipart/form-data)
+app.post('/api/usuarios', upload.single('foto'), async (req, res) => {
   const {
-    nome_completo, apelido, data_nascimento, email, genero, cidade,
-    senha, foto
+    nome_completo, apelido, data_nascimento, email, genero, cidade, senha
   } = req.body;
+  const foto = req.file ? req.file.filename : null;
 
-  if (!nome_completo || !email || !senha) {
-    return res.status(400).json({ error: 'Nome completo, e-mail e senha são obrigatórios.' });
+  // Alinhe os campos obrigatórios conforme o frontend
+  if (!nome_completo || !data_nascimento || !email || !genero || !cidade || !senha) {
+    return res.status(400).json({ error: 'Todos os campos obrigatórios devem ser preenchidos.' });
   }
 
   try {
@@ -107,7 +123,7 @@ app.post('/api/usuarios', async (req, res) => {
       genero || null,
       cidade || null,
       senhaHash,
-      foto || null
+      foto
     ]);
 
     res.status(201).json({ message: 'Usuário cadastrado com sucesso!' });
@@ -116,7 +132,7 @@ app.post('/api/usuarios', async (req, res) => {
   }
 });
 
-// Exemplo de rota para listar times (útil para autocomplete, escudos, etc)
+// Exemplo de rota para listar times
 app.get('/api/teams', async (req, res) => {
   try {
     const result = await pool.query('SELECT id, name_team, escudo_team FROM teams ORDER BY name_team');
@@ -140,6 +156,9 @@ app.get('/api/countries', async (req, res) => {
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
+
+// Serve arquivos de imagem de uploads caso queira utilizar (opcional)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
