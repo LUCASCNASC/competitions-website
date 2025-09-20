@@ -160,6 +160,17 @@ app.get('/api/health', (req, res) => {
 // Serve arquivos de imagem de uploads caso queira utilizar (opcional)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Serve arquivos estáticos da pasta pública (ajuste se sua pasta não for 'public')
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Redireciona todas as rotas que não sejam de API ou arquivos estáticos para o index.html
+app.get('*', (req, res) => {
+  if (req.path.startsWith('/api/') || req.path.startsWith('/uploads/')) {
+    return res.status(404).json({ error: 'API route not found.' });
+  }
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`API rodando em http://localhost:${PORT}`);

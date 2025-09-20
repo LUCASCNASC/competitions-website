@@ -1,5 +1,3 @@
-
-
 // Busca todas as competições da API
 async function fetchCompetitionsFromAPI() {
   try {
@@ -186,12 +184,133 @@ function renderHome() {
   mainContent.style.animation = "fadein 0.5s";
 }
 
+// NOVO: Formulário de cadastro funcional e bonito
 function renderCadastro() {
-  // ... igual antes ...
+  mainContent.innerHTML = `
+    <div class="cadastro-container">
+      <h1>CADASTRE-SE</h1>
+      <form class="cadastro-form" id="cadastro-form" enctype="multipart/form-data">
+        <div class="form-row">
+          <div>
+            <label for="nome_completo">Nome completo*</label>
+            <input name="nome_completo" id="nome_completo" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label for="data_nascimento">Data de nascimento*</label>
+            <input name="data_nascimento" id="data_nascimento" type="date" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label for="email">E-mail*</label>
+            <input name="email" id="email" type="email" required />
+          </div>
+          <div>
+            <label for="confirmar_email">Confirmar e-mail*</label>
+            <input name="confirmar_email" id="confirmar_email" type="email" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label for="genero">Gênero*</label>
+            <select name="genero" id="genero" required>
+              <option value="">Selecione</option>
+              <option value="Masculino">Masculino</option>
+              <option value="Feminino">Feminino</option>
+              <option value="Outro">Outro</option>
+            </select>
+          </div>
+          <div>
+            <label for="apelido">Apelido</label>
+            <input name="apelido" id="apelido" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label for="foto">Foto</label>
+            <input name="foto" id="foto" type="file" accept="image/*" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label for="cidade">Cidade*</label>
+            <input name="cidade" id="cidade" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label for="senha">Senha*</label>
+            <input name="senha" id="senha" type="password" required />
+          </div>
+          <div>
+            <label for="confirmar_senha">Confirmar senha*</label>
+            <input name="confirmar_senha" id="confirmar_senha" type="password" required />
+          </div>
+        </div>
+        <div id="cadastro-erro" class="erro"></div>
+        <div id="cadastro-sucesso" class="sucesso"></div>
+        <button type="submit" class="btn-cadastrar">Cadastrar</button>
+      </form>
+    </div>
+  `;
+
+  document.getElementById("cadastro-form").onsubmit = async function(e) {
+    e.preventDefault();
+    const erroDiv = document.getElementById("cadastro-erro");
+    const sucessoDiv = document.getElementById("cadastro-sucesso");
+    erroDiv.textContent = "";
+    sucessoDiv.textContent = "";
+
+    const form = new FormData(this);
+
+    // Validações front-end
+    if (
+      !form.get("nome_completo") || !form.get("data_nascimento") ||
+      !form.get("email") || !form.get("confirmar_email") ||
+      !form.get("genero") || !form.get("cidade") ||
+      !form.get("senha") || !form.get("confirmar_senha")
+    ) {
+      erroDiv.textContent = "Preencha todos os campos obrigatórios!";
+      return;
+    }
+    if (form.get("email") !== form.get("confirmar_email")) {
+      erroDiv.textContent = "Os e-mails não coincidem!";
+      return;
+    }
+    if (form.get("senha") !== form.get("confirmar_senha")) {
+      erroDiv.textContent = "As senhas não coincidem!";
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:3001/api/usuarios", {
+        method: "POST",
+        body: form,
+      });
+      const data = await response.json();
+      if (response.ok) {
+        sucessoDiv.textContent = "Usuário cadastrado com sucesso!";
+        setTimeout(() => {
+          navigate("/", true);
+        }, 2000);
+      } else {
+        erroDiv.textContent = data.error || "Erro ao cadastrar.";
+      }
+    } catch {
+      erroDiv.textContent = "Erro ao conectar com o servidor.";
+    }
+  };
 }
 
 function renderLogin() {
-  // ... igual antes ...
+  mainContent.innerHTML = `
+    <div class="cadastro-container">
+      <h1>LOGIN (simulação)</h1>
+      <div class="form-row"><div>Funcionalidade não implementada aqui.</div></div>
+    </div>
+  `;
 }
 
 function navigate(path, addToHistory=true) {
