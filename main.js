@@ -1,3 +1,4 @@
+
 // Busca todas as competições da API
 async function fetchCompetitionsFromAPI() {
   try {
@@ -184,32 +185,36 @@ function renderHome() {
   mainContent.style.animation = "fadein 0.5s";
 }
 
-// NOVO: Formulário de cadastro funcional e bonito
+// NOVO: Formulário de cadastro funcional e bonito com preview, validação e feedback
 function renderCadastro() {
   mainContent.innerHTML = `
     <div class="cadastro-container">
       <h1>CADASTRE-SE</h1>
-      <form class="cadastro-form" id="cadastro-form" enctype="multipart/form-data">
+      <form class="cadastro-form" id="cadastro-form" enctype="multipart/form-data" autocomplete="off" novalidate>
         <div class="form-row">
           <div>
             <label for="nome_completo">Nome completo*</label>
-            <input name="nome_completo" id="nome_completo" required />
+            <input name="nome_completo" id="nome_completo" required autocomplete="name" />
+            <span class="field-erro" id="erro-nome_completo"></span>
           </div>
         </div>
         <div class="form-row">
           <div>
             <label for="data_nascimento">Data de nascimento*</label>
-            <input name="data_nascimento" id="data_nascimento" type="date" required />
+            <input name="data_nascimento" id="data_nascimento" type="date" required autocomplete="bday" />
+            <span class="field-erro" id="erro-data_nascimento"></span>
           </div>
         </div>
         <div class="form-row">
           <div>
             <label for="email">E-mail*</label>
-            <input name="email" id="email" type="email" required />
+            <input name="email" id="email" type="email" required autocomplete="email" />
+            <span class="field-erro" id="erro-email"></span>
           </div>
           <div>
             <label for="confirmar_email">Confirmar e-mail*</label>
             <input name="confirmar_email" id="confirmar_email" type="email" required />
+            <span class="field-erro" id="erro-confirmar_email"></span>
           </div>
         </div>
         <div class="form-row">
@@ -221,32 +226,37 @@ function renderCadastro() {
               <option value="Feminino">Feminino</option>
               <option value="Outro">Outro</option>
             </select>
+            <span class="field-erro" id="erro-genero"></span>
           </div>
           <div>
             <label for="apelido">Apelido</label>
-            <input name="apelido" id="apelido" />
+            <input name="apelido" id="apelido" autocomplete="nickname"/>
           </div>
         </div>
         <div class="form-row">
           <div>
             <label for="foto">Foto</label>
             <input name="foto" id="foto" type="file" accept="image/*" />
+            <div id="foto-preview" class="foto-preview" style="display:none;"></div>
           </div>
         </div>
         <div class="form-row">
           <div>
             <label for="cidade">Cidade*</label>
-            <input name="cidade" id="cidade" required />
+            <input name="cidade" id="cidade" required autocomplete="address-level2"/>
+            <span class="field-erro" id="erro-cidade"></span>
           </div>
         </div>
         <div class="form-row">
           <div>
             <label for="senha">Senha*</label>
-            <input name="senha" id="senha" type="password" required />
+            <input name="senha" id="senha" type="password" required autocomplete="new-password" />
+            <span class="field-erro" id="erro-senha"></span>
           </div>
           <div>
             <label for="confirmar_senha">Confirmar senha*</label>
             <input name="confirmar_senha" id="confirmar_senha" type="password" required />
+            <span class="field-erro" id="erro-confirmar_senha"></span>
           </div>
         </div>
         <div id="cadastro-erro" class="erro"></div>
@@ -256,6 +266,69 @@ function renderCadastro() {
     </div>
   `;
 
+  // Preview da foto
+  document.getElementById("foto").addEventListener("change", function(e) {
+    const previewDiv = document.getElementById("foto-preview");
+    previewDiv.style.display = "none";
+    previewDiv.innerHTML = "";
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        previewDiv.innerHTML = `<img src="${ev.target.result}" alt="Preview da foto" style="max-width:120px;max-height:120px;border-radius:6px;">`;
+        previewDiv.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Validação em tempo real
+  const fields = [
+    "nome_completo", "data_nascimento", "email", "confirmar_email",
+    "genero", "cidade", "senha", "confirmar_senha"
+  ];
+  fields.forEach(field => {
+    document.getElementById(field).addEventListener("input", function() {
+      validateField(field);
+    });
+  });
+  document.getElementById("confirmar_email").addEventListener("input", function() {
+    validateEmails();
+  });
+  document.getElementById("confirmar_senha").addEventListener("input", function() {
+    validateSenhas();
+  });
+
+  function validateField(field) {
+    const val = document.getElementById(field).value.trim();
+    const erroSpan = document.getElementById("erro-" + field);
+    erroSpan.textContent = "";
+    if (!val) {
+      erroSpan.textContent = "Obrigatório";
+    }
+    if (field === "email" && val) {
+      if (!/^[^@]+@[^@]+\.[^@]+$/.test(val)) erroSpan.textContent = "Email inválido";
+    }
+  }
+  function validateEmails() {
+    const email = document.getElementById("email").value.trim();
+    const confEmail = document.getElementById("confirmar_email").value.trim();
+    const erroSpan = document.getElementById("erro-confirmar_email");
+    erroSpan.textContent = "";
+    if (email && confEmail && email !== confEmail) {
+      erroSpan.textContent = "Emails não coincidem";
+    }
+  }
+  function validateSenhas() {
+    const senha = document.getElementById("senha").value;
+    const confSenha = document.getElementById("confirmar_senha").value;
+    const erroSpan = document.getElementById("erro-confirmar_senha");
+    erroSpan.textContent = "";
+    if (senha && confSenha && senha !== confSenha) {
+      erroSpan.textContent = "Senhas não coincidem";
+    }
+  }
+
   document.getElementById("cadastro-form").onsubmit = async function(e) {
     e.preventDefault();
     const erroDiv = document.getElementById("cadastro-erro");
@@ -263,26 +336,22 @@ function renderCadastro() {
     erroDiv.textContent = "";
     sucessoDiv.textContent = "";
 
-    const form = new FormData(this);
+    // Validação final
+    let erro = false;
+    fields.forEach(field => {
+      validateField(field);
+      if (document.getElementById("erro-" + field).textContent) erro = true;
+    });
+    validateEmails();
+    validateSenhas();
+    if (document.getElementById("erro-confirmar_email").textContent) erro = true;
+    if (document.getElementById("erro-confirmar_senha").textContent) erro = true;
+    if (erro) {
+      erroDiv.textContent = "Corrija os campos destacados!";
+      return;
+    }
 
-    // Validações front-end
-    if (
-      !form.get("nome_completo") || !form.get("data_nascimento") ||
-      !form.get("email") || !form.get("confirmar_email") ||
-      !form.get("genero") || !form.get("cidade") ||
-      !form.get("senha") || !form.get("confirmar_senha")
-    ) {
-      erroDiv.textContent = "Preencha todos os campos obrigatórios!";
-      return;
-    }
-    if (form.get("email") !== form.get("confirmar_email")) {
-      erroDiv.textContent = "Os e-mails não coincidem!";
-      return;
-    }
-    if (form.get("senha") !== form.get("confirmar_senha")) {
-      erroDiv.textContent = "As senhas não coincidem!";
-      return;
-    }
+    const form = new FormData(this);
 
     try {
       const response = await fetch("http://localhost:3001/api/usuarios", {

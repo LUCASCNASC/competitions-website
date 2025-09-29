@@ -72,6 +72,32 @@
   font-size: 0.95em;
 }
 
+.field-erro {
+  color: #FF4747;
+  font-size: 0.92em;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  min-height: 18px;
+  font-weight: 500;
+}
+
+.foto-preview {
+  margin-top: 8px;
+  width: 120px;
+  height: 120px;
+  background: #181A1B;
+  color: #FFD230;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 0.95em;
+  cursor: pointer;
+  border: 1px solid #FFD230;
+  overflow: hidden;
+}
+
 .btn-cadastrar {
   background: linear-gradient(90deg, #FFD230 60%, #FFB300 100%);
   color: #222;
